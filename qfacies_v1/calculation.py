@@ -10,7 +10,6 @@ requiered, calculate all of the indeces for each panel, and to identify outliers
 """
 import numpy as np
 
-
 _lof = False  # Whether to consider outlier analyses or not.
 
 
@@ -26,7 +25,32 @@ class Indixes:
     ''' Class that includes all calculation methods of Q-Facies indices.'''
 
     def __init__(self, points, df, panel, **kw):
+        """
+        Initialize the Indixes class.
 
+        This method sets up the initial state of the Indixes object, including data preprocessing,
+        outlier detection, convex hull calculation, and index creation.
+
+        Parameters:
+        -----------
+        points : numpy.ndarray
+            Array of points representing the data in 2D space.
+        df : pandas.DataFrame
+            DataFrame containing the original data.
+        panel : str
+            The type of panel being analyzed ('anion', 'cation', or 'diamond').
+        **kw : dict
+            Additional keyword arguments. Expected to contain 'lof_neighbours' for LOF calculation.
+
+        Returns:
+        --------
+        None
+
+        Note:
+        -----
+        This method modifies the object's state by setting various attributes and
+        calling other methods for further calculations.
+        """
         global _lof
         self.panel = panel
         self.df = df
@@ -40,6 +64,32 @@ class Indixes:
         self.main()
 
     def main(self):
+        """
+        Calculate and set various indices and metrics for the dataset.
+
+        This method computes several characteristics of the dataset including:
+        - Number of points
+        - Area (using Gauss's formula)
+        - Perimeter
+        - Shape index
+        - Blau index
+        - Orientation angle
+        - Standard distance (dispersion)
+
+        The calculated values are stored as attributes of the class instance.
+
+        Parameters:
+        -----------
+        None
+
+        Returns:
+        --------
+        None
+
+        Note:
+        -----
+        This method modifies the object's state by setting various attributes.
+        """
         self.num_points = self.df.shape[0]
         self.area = self.gauss()
         self.perimeter = self.perim()
@@ -49,7 +99,31 @@ class Indixes:
         self.sd = self.dispersion()
 
     def get(self):
-        '''Get all Group parameters.'''
+        """
+        Retrieve all calculated group parameters for the dataset.
+
+        This method collects various metrics and indices calculated for the dataset
+        and returns them as a dictionary.
+
+        Returns:
+        --------
+        dict
+            A dictionary containing the following keys and values:
+            - Area: The calculated area of the dataset.
+            - Shape: The shape index of the dataset.
+            - Angle: The orientation angle of the dataset.
+            - Panel: The type of panel being analyzed ('anion', 'cation', or 'diamond').
+            - Blau: The normalized Blau index value.
+            - Dispersion: The standard distance (dispersion) of the dataset.
+            - points: The number of points in the dataset.
+            - Dominant: The dominant facies (for cation and anion panels only).
+            - Additional keys from self.blau_idx[1]: Various facies proportions.
+
+        Note:
+        -----
+        The returned dictionary includes all the main characteristics and indices
+        calculated for the dataset, providing a comprehensive summary of its properties.
+        """
         return dict(Area=self.area, Shape=self.shape_idx,
                     Angle=self.angle, Panel=self.panel,
                     Blau=self.blau_idx[0], Dispersion=self.sd,
@@ -161,8 +235,28 @@ class Indixes:
             return c/(100*np.sin(np.pi/3))
 
     def perim(self):
-        ''' Given an array with points sorted in a non-clockwise sense,
-        it calculates the polygon perimiter'''
+        """
+        Calculate the perimeter of a polygon defined by the convex hull points.
+
+        This method computes the perimeter of the polygon formed by the convex hull points
+        of the dataset. It assumes that the points are sorted in a non-clockwise order.
+
+        Parameters:
+        -----------
+        self : object
+            The instance of the class containing the convex hull points (self.ch_points).
+
+        Returns:
+        --------
+        float
+            The calculated perimeter of the polygon.
+
+        Notes:
+        ------
+        The method closes the polygon by repeating the last point at the beginning,
+        calculates the distances between consecutive points using the Pythagorean theorem,
+        and sums these distances to obtain the total perimeter.
+        """
         # Last coordinate must be repeated in order to close the polygon.
         points = np.concatenate(([self.ch_points[-1]], self.ch_points))
         # Elements differences
@@ -172,19 +266,66 @@ class Indixes:
         return h
 
     def shape(self, area, perimeter):
-        ''' Shape Index, introduced by Richardson in 1961 (see [3])
-        Whilst values close to 100% indicate a circular-like form, 
-        values close to zero mean the contrary (linear-like form).
+        """
+        Calculate the Shape Index, introduced by Richardson in 1961.
 
-        [3] Haggett, P., Cliff, A. D., & Frey, A. (1977). Locational analysis in
-                 human geography (2nd ed.). London: Edward Arnold Ltd.
+        This method computes the Shape Index, which provides a measure of how circular
+        or linear a shape is. Values close to 100% indicate a circular-like form,
+        while values close to zero suggest a more linear-like form.
 
-        '''
+        Parameters:
+        -----------
+        area : float
+            The area of the shape, typically calculated using the Gauss theorem.
+        perimeter : float
+            The perimeter of the shape.
+
+        Returns:
+        --------
+        float
+            The Shape Index value, ranging from 0 to 100.
+            - Values close to 100 indicate a more circular shape.
+            - Values close to 0 indicate a more linear shape.
+
+        Notes:
+        ------
+        The formula used is: ((4 * π * area) / (perimeter^2)) * 100
+
+        Reference:
+        ----------
+        Haggett, P., Cliff, A. D., & Frey, A. (1977). Locational analysis in
+        human geography (2nd ed.). London: Edward Arnold Ltd.
+        """
         area = area*50 if self.area == 'anion' or 'cation' else area*100
         return ((4 * np.pi * area)/(perimeter**2)) * 100
 
     def orientation(self):
-        ''' Return the angle of the linear regression model.'''
+        """
+        Calculate the orientation angle of the data points using linear regression.
+
+        This method fits a linear regression model to the data points and calculates
+        the angle of the resulting line. The angle is measured in degrees from the
+        positive x-axis, with positive angles indicating a counter-clockwise rotation.
+
+        Parameters:
+        -----------
+        self : object
+            The instance of the class containing the data points (self.points).
+
+        Returns:
+        --------
+        float
+            The orientation angle in degrees, ranging from 0 to 360.
+            - 0 degrees indicates a horizontal line pointing right.
+            - 90 degrees indicates a vertical line pointing up.
+            - 180 degrees indicates a horizontal line pointing left.
+            - 270 degrees indicates a vertical line pointing down.
+
+        Notes:
+        ------
+        The method uses numpy's polyfit function to perform the linear regression.
+        The resulting angle is adjusted to always be between 0 and 360 degrees.
+        """
         x, y = self.points[:, 0], self.points[:, 1]
         coeffs = np.polyfit(x, y, 1)
         angle = (np.arctan(coeffs[0])) * 180/np.pi
@@ -257,26 +398,40 @@ class Indixes:
         return [normalized_index, facies, dominant]
 
     def dispersion(self):
-        '''Standard distance index. Calculation based on the 'typical distance'
-        concept by Roberto Bachi [5] *. Values ares returned normalized to the
-        maximum dispersion value of each panel:
-            For cation and anion panels: 57.73 distance units
-            For diamond panel: 70.71 distance units
+        """
+        Calculate the standard distance index based on Roberto Bachi's 'typical distance' concept.
 
-        [5] Bachi, R. (1963). Standard distance measures and related methods for
-            spatial analysis. Papers of the Regional Science Association 10,
-            83–132 (1963). https://doi.org/10.1007/BF01934680
+        This method computes the dispersion of points in the dataset using the standard distance
+        formula. The result is normalized to the maximum dispersion value for each panel type.
 
-        * Well explained at: 
+        Parameters:
+        -----------
+        self : object
+            The instance of the class containing the data points (self.points) and panel type (self.panel).
+
+        Returns:
+        --------
+        float
+            The normalized standard distance index.
+            - For cation and anion panels: normalized to 57.73 distance units.
+            - For diamond panel: normalized to 70.71 distance units.
+
+        Notes:
+        ------
+        The calculation is based on:
+        Bachi, R. (1963). Standard distance measures and related methods for spatial analysis.
+        Papers of the Regional Science Association 10, 83–132. https://doi.org/10.1007/BF01934680
+
+        For a detailed explanation, see:
         https://volaya.github.io/libro-sig/chapters/Estadistica_espacial.html
-        '''
+        """
         x, y = self.points[:, 0], self.points[:, 1]
-        sd_distance = np.sqrt(((np.sum(x**2)/len(x)) - np.mean(x)**2) +
-                              ((np.sum(y**2)/len(y)) - np.mean(y)**2))
+        sd_distance = np.sqrt(((np.sum(x ** 2) / len(x)) - np.mean(x) ** 2) +
+                              ((np.sum(y ** 2) / len(y)) - np.mean(y) ** 2))
         if self.panel == 'anion' or self.panel == 'cation':
-            return sd_distance * 100/57.735026918962575
+            return sd_distance * 100 / 57.735026918962575
         elif self.panel == 'diamond':
-            return sd_distance * 100/70.71067811865476
+            return sd_distance * 100 / 70.71067811865476
 
 
 class Transform:
@@ -290,7 +445,7 @@ class Transform:
         self.offset = 22  # This must match with Plot.Skeleton.offset value.
 
     def rotation(self):
-        '''Rotation transformation of 300 degrees. Aply for diamond panel'''
+        '''Rotation transformation of 300 degrees. Apply for diamond panel'''
         return np.array([(np.cos(np.radians(300)), np.sin(np.radians(300))),
                          (-np.sin(np.radians(300)), np.cos(np.radians(300)))])
 

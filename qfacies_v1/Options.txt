@@ -7,14 +7,15 @@
 ; ===============================================================================
 ; ============================ 2.1 GENERAL OPTIONS ==============================
 ; ===============================================================================
+[GENERAL]
 ; 2.1.1 -------------------------------------------------------------------------
 ; Name of the input file (including extension) located in the 'Data' folder. String.
-fname="groups_example.txt"
+fname=groups_example.txt
 
 ; 2.1.2 -------------------------------------------------------------------------
 ; Way of analyzing the dataset. String.
 ; Options: 'by_groups','by_time'.
-way='by_groups'
+way=by_groups
 
 ; 2.1.3 -------------------------------------------------------------------------
 ; Transform concentrations to percentage of meq/l. Boolean.
@@ -29,13 +30,13 @@ transform=True
 ;    https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html
 ; _._In the second step, these outliers are checked and only those outside the convex
 ;    hull polygon will be discarded.
-lof=False
+lof=True
 
 ; 2.1.5 -------------------------------------------------------------------------
 ; Number of surrounding points taken into account while computing the LOF algorithm. Positive integer.
 ; Note that the lower this value is, the more points will be considered as outliers.
 ; If n_neighbors is larger than the number of samples provided, all samples will be used.
-lof_neighbours=15
+lof_neighbours=150
 
 ; 2.1.6 -------------------------------------------------------------------------
 ;Create an Excel with the output information (saved to the 'Data' folder). Boolean. 
@@ -47,11 +48,11 @@ excel=True
 ; Time series options are only considered when way='by_time'
 ; The file "How_to_QFacies.pdf" shows graphically the meaning of each variable
 ; considered in this section.
-
+[TIME_SERIES]
 ; 2.2.1 -------------------------------------------------------------------------
 ; Specify the dates format. String.
 ; For more info, visit: https://www.dataindependent.com/pandas/pandas-to-datetime/
-datetime_format = '%d/%m/%Y'
+datetime_format = %%d/%%m/%%Y
 
 ; 2.2.2 -------------------------------------------------------------------------
 ; Width of the rolling window to create temporal groups. Positive integer.
@@ -73,17 +74,17 @@ resample=True
 ; Supported string aliases can be found at: 
 ; https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases  
 ; A custom frequency can be made by preceding the day acronym by an integer. 
-; e.g.: every-17-days = '17D'
+; e.g.: every-17-days = 17D
 ; A more detailed explanation can be found in the "How_to_QFacies.pdf" file
 ; e.g.: 'yearly'or 'Y', 'monthly'or 'M', 'weekly' or 'W', 'daily' or 'D'
-resample_interval='M'
+resample_interval=M
 
 ; 2.2.6 -------------------------------------------------------------------------
 ; Fill out this section only if you want to resample the series 
 ; -------------------------------------------------------------------------------
 ; Resampling aggregation method. String.
 ; Options: 'mean','last','first'.
-aggregation='last' 
+aggregation=last
 
 ; ===============================================================================
 ; =========================== 2.3 Graphic Options ===============================
@@ -92,14 +93,14 @@ aggregation='last'
 ; The color scheme to be used in the different elements can be specifed in two ways: 
 ; a) Following Matplotlib nomenclature (https://matplotlib.org/stable/gallery/color/named_colors.html) E.g. 'blue'
 ; b) Following HEX nomenclature. E.g. '#BB2EB3'
-
+[GRAPHICS]
 ; 2.3.1 -------------------------------------------------------------------------
 ; Plot outliers points (note that they are not considered for indices calculations). Boolean.
 plot_outliers=True
 
 ; 2.3.2 -------------------------------------------------------------------------
 ; Color of outliers points. String.
-color_outliers='Red'
+color_outliers=red
 
 ; 2.3.3 -------------------------------------------------------------------------
 ; Point size. This size will be apply to all plotted points. Positive integer.
@@ -111,11 +112,11 @@ point_transparency=0.8
 
 ; 2.3.5 -------------------------------------------------------------------------
 ; Color of the points that conform the convex hull. String.
-color_outter_points='black'
+color_outter_points=black
 
 ; 2.3.6 -------------------------------------------------------------------------
 ; Color of the points that lay within the convex hull. String.
-color_inner_points='grey'
+color_inner_points=grey
 
 ; 2.3.7 -------------------------------------------------------------------------
 ; Regression line width. Float.
@@ -123,7 +124,7 @@ line_lw=0.5
 
 ; 2.3.8 -------------------------------------------------------------------------
 ; Regression line color. String.
-line_color='#47a0b3'
+line_color=#47a0b3
 
 ; 2.3.9 -------------------------------------------------------------------------
 ; Convex hull transparency. Float between 0 (transparent) and 1 (opaque).
@@ -135,19 +136,19 @@ pol_lw=0.5
 
 ; 2.3.11 ------------------------------------------------------------------------
 ; Line color of the convex hull polygon. String.
-pol_ec='black'
+pol_ec=black
 
 ; 2.3.12 ------------------------------------------------------------------------
 ; Color palette that will be used in the figures. String.
 ; Examples: 'Greens', 'Greys', 'Blues', 'Reds', 'YlOrBr', 'Spectral', etc.
 ; Many more options are available at:
 ; https://matplotlib.org/stable/tutorials/colors/colormaps.html
-cmap_name='YlOrBr'
+cmap_name=YlOrBr
 
 ; 2.3.13 ------------------------------------------------------------------------
 ; Optional color to plot the figures in the 'Graphics' folder. String.
 ; This could be done attending to a specific color or a color palette.
-folder_color='limegreen'
+folder_color=limegreen
 
 ; 2.3.14 ------------------------------------------------------------------------
 ; Whether to reverse the color palette or not. Boolean.
@@ -164,12 +165,12 @@ dpi=400
 ; 2.3.17 ------------------------------------------------------------------------
 ; Output graphic format. String.
 ; Options: 'jpg', 'png', 'svg', 'pdf', 'ps'. 
-extension_graph='png'
+extension_graph=png
 
 ; ===============================================================================
 ; =========================== 2.4 Visual Methods ================================
 ; ===============================================================================
-
+[VISUAL]
 ; 2.4.1 -------------------------------------------------------------------------
 ;Create a Piper diagram per group with all the indices information. Boolean. 
 figs=True 
@@ -181,12 +182,12 @@ overlap_fig=True
 ; 2.4.3 -------------------------------------------------------------------------
 ; Choose the variable in which to graduate de 'overlap_fig' figure. String.
 ; Options: 'Area', 'Shape', 'Blau','Angle', 'Time', 'Dispersion'.
-overlap_var='Area'
+overlap_var=Area
 
 ; 2.4.4 -------------------------------------------------------------------------
 ; Choose whether to represent the polygon of the convex hull or its centroid at overlap_fig. String.
 ; Options:'centroids', 'polygons'.
-overlap_way='polygons'
+overlap_way=polygons
 
 ; 2.4.5 -------------------------------------------------------------------------
 ; Create a figure composed by three plots (one per panel) with the information of all the indices. Boolean.
@@ -202,7 +203,7 @@ plot_all=True
 ; ===============================================================================
 ; ============================== 2.5 Other Options ==============================
 ; ===============================================================================
-
+[OTHER]
 ; 2.5.1 -------------------------------------------------------------------------
 ; Ignore all execution warnings. Boolean. 
 ignore_warnings=False
