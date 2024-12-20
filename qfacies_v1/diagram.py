@@ -103,7 +103,7 @@ class Cation(Panel):
         ''' Contains the info to represent on the diagram'''
         x,y = 0.72, 0.81
         text = '\n'.join([
-            "{:^25}".format(r'$\bf{}$ ({})'.format('Cation', self.Params.num_points)),
+            "{:^25}".format(r'${}$ ({})'.format('Cation', self.Params.num_points)),
             "{:<}: {:>7.2f}".format('Ai (%)',      self.Params.area),
             "{:<}: {:>8.2f}".format('Si (%)', self.Params.shape_idx),
             "{:<}: {:>8.2f}".format('Or ({})'.format('$^{o}$'),
@@ -135,7 +135,7 @@ class Anion(Panel):
         ''' Contains the info to represent on the diagram'''
         x,y = 0.72, 0.58
         text = '\n'.join([
-            "{:^25}".format(r'$\bf{}$ ({})'.format('Anion', self.Params.num_points)),
+            "{:^25}".format(r'${}$ ({})'.format('Anion', self.Params.num_points)),
             "{:<}: {:>7.2f}".format('Ai (%)',      self.Params.area),
             "{:<}: {:>8.2f}".format('Si (%)', self.Params.shape_idx),
             "{:<}: {:>8.2f}".format('Or ({})'.format('$^{o}$'),
@@ -170,7 +170,7 @@ class Diamond(Panel):
         ''' Contains the info to represent on the diagram'''
         x,y = 0.07, 0.68
         text = '\n'.join([
-            "{:^22}".format(r'$\bf{}$ ({})'.format('Diamond', self.Params.num_points)),
+            "{:^22}".format(r'${}$ ({})'.format('Diamond', self.Params.num_points)),
             "{:<}: {:>7.2f}".format('Ai (%)',      self.Params.area),
             "{:<}: {:>8.2f}".format('Si (%)', self.Params.shape_idx),
             "{:<}: {:>8.2f}".format('Or ({})'.format('$^{o}$'),
